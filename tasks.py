@@ -57,8 +57,12 @@ def get_tg_id(user: dict):
         tg_id = User.query.filter(User.name == user_name).filter(User.phone_number.contains(user_phone[5:])).first().tg_id
         return tg_id
 
-@app.on_configure.connect
+
+@app.on_after_configure.connect
 def setup_periodic_tasks(sender, **kwargs):
     sender.add_periodic_task(
-        crontab(minute='*'), last_attempt_check.s()
+        crontab(minute='30'), last_attempt_check.s()
+    )
+    sender.add_periodic_task(
+        crontab(minute='10'), birthday_check.s()
     )
