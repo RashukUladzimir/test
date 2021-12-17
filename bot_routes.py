@@ -279,7 +279,7 @@ async def keyboarding(call: types.CallbackQuery):
                 text = 'Введите ваше имя, по которому наши сотрудники могли бы к вам обращаться'
                 await User.update(user.tg_id, step=2)
 
-            elif user.auth_hash is not None: #изменить
+            elif user.auth_hash is None:
                 text = 'Введите код подтверждения, который пришел к вам на телефон'
                 await User.update(user.tg_id, step=3)
                 await y.send_code(company_id, phone_number=user.phone_number)
@@ -305,7 +305,7 @@ async def keyboarding(call: types.CallbackQuery):
                     delay = helper.get_delay(text_storage.get('date'), text_storage.get('time'))
                     master_tip_link = await y.get_master_tip_link(company_id, staff_id)
 
-                    if (delay - 60*60*2) // 360000 < 2:
+                    if (delay - 60*60*2) // 3600 < 2:
                         helper.send_invite(user.tg_id, 0)
                     else:
                         helper.send_invite(user.tg_id, delay - 60*60*2)
