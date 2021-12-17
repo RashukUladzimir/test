@@ -1,0 +1,10 @@
+/venv/
+/migrations/
+app.db
+config.ini
+.idea
+/logs/
+.env
+__pycache__/
+/app/__pycache__/
+/app/main/__pycache__/

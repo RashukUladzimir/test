@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
+    <h1> Введите сообщение для рассылки, количество символов - не более 1000. Чем больше вес изображения,
+    тем дольше будет длиться рассылка. Колво адресантов: {{ user_count }}</h1>
+    {% if form %}
+    {{ wtf.quick_form(form) }}
+    <br>
+    {% endif %}
+{% endblock %}
