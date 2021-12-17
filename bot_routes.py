@@ -279,7 +279,7 @@ async def keyboarding(call: types.CallbackQuery):
                 text = 'Введите ваше имя, по которому наши сотрудники могли бы к вам обращаться'
                 await User.update(user.tg_id, step=2)
 
-            elif user.auth_hash is None:
+            elif user.auth_hash is not None: #изменить после
                 text = 'Введите код подтверждения, который пришел к вам на телефон'
                 await User.update(user.tg_id, step=3)
                 await y.send_code(company_id, phone_number=user.phone_number)
@@ -297,7 +297,7 @@ async def keyboarding(call: types.CallbackQuery):
                 service_ids = [*text_storage.get('service_ids').keys()]
                 # print(args, staff)
                 record_id, record_hash = await y.create_record(*args, staff_id)
-                from tasks import last_attempt_check, birthday_check
+                # from tasks import last_attempt_check, birthday_check
                 if record_id and record_hash:
                     await Record.create(user_id=user.id, record_id=record_id, record_hash=record_hash, date=datetime,
                                         services=services, master_id=staff_id, company_id=company_id, service_ids=str(service_ids))
@@ -313,8 +313,8 @@ async def keyboarding(call: types.CallbackQuery):
                     helper.send_tips(user.tg_id, master_tip_link, delay+record_length+600)
                     google_link, yandex_link = await y.get_links(company_id)
                     helper.send_review(user.tg_id, google_link, yandex_link, delay+record_length+3600)
-                    birthday_check.delay()
-                    last_attempt_check.delay()
+                    # birthday_check.delay()
+                    # last_attempt_check.delay()
 
                     text = 'Запись успешно создана!'
                     text_storage.update(
@@ -531,7 +531,7 @@ async def myrecords(message: types.Message):
            f"Ваш номер телефона {user.phone_number or 'не указан'}\n" \
            f"Аккаунт подтвержден по смс: {'да' if user.auth_hash else 'нет'}"
 
-    if user.auth_hash:
+    if not user.auth_hash:
         companies = json.loads(os.environ.get('ADDRESSES'))
         list_ids = await y.get_records_ids(user.client_id, companies)
         records = await Record.get_all(owner_id=user.id, list_ids=list_ids)
