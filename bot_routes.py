@@ -304,17 +304,9 @@ async def keyboarding(call: types.CallbackQuery):
                     record_length = await y.get_record_time(company_id=company_id, service_ids=service_ids)
                     delay = helper.get_delay(text_storage.get('date'), text_storage.get('time'))
                     master_tip_link = await y.get_master_tip_link(company_id, staff_id)
-
-                    if (delay - 60*60*2) // 3600 < 2:
-                        helper.send_invite(user.tg_id, 0)
-                    else:
-                        helper.send_invite(user.tg_id, delay - 60*60*2)
-
-                    helper.send_tips(user.tg_id, master_tip_link, delay+record_length+600)
                     google_link, yandex_link = await y.get_links(company_id)
-                    helper.send_review(user.tg_id, google_link, yandex_link, delay+record_length+3600)
-                    # birthday_check.delay()
-                    # last_attempt_check.delay()
+
+                    helper.complex(user.tg_id, delay, record_length, master_tip_link, google_link, yandex_link)
 
                     text = 'Запись успешно создана!'
                     text_storage.update(
