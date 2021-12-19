@@ -61,8 +61,8 @@ def get_tg_id(user: dict):
 @app.on_after_configure.connect
 def setup_periodic_tasks(sender, **kwargs):
     sender.add_periodic_task(
-        crontab(minute='30'), last_attempt_check.s()
+        crontab(minute='*'), last_attempt_check.s()
     )
     sender.add_periodic_task(
-        crontab(minute='10'), birthday_check.s()
+        crontab(minute='*'), birthday_check.s()
     )
