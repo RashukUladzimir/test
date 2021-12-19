@@ -56,7 +56,7 @@ def birthday_check():
     company_ids = json.loads(os.environ.get('ADDRESSES'))
     for company in company_ids:
         users = y.get_birthday_clients(company)
-        print('bc1')
+        print(users)
         if users:
             for user in users:
                 tg_id = get_tg_id(user)
@@ -68,7 +68,5 @@ def get_tg_id(user: dict):
     with appl.app_context():
         user_name = user.get('name')
         user_phone = user.get('phone')
-        tg_id = User.query.filter(User.name == user_name).filter(User.phone_number.contains(user_phone[5:])).first().tg_id
-        return tg_id
-
-
+        db_user = User.query.filter(User.name == user_name).filter(User.phone_number.contains(user_phone[5:])).first()
+        return db_user.tg_id if db_user else None
