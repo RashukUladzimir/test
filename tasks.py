@@ -16,6 +16,16 @@ app.conf.update(
     timezone='Europe/Moscow'
 )
 
+@app.on_after_configure.connect
+def setup_periodic_tasks(sender, **kwargs):
+    sender.add_periodic_task(
+        crontab(minute='*'), last_attempt_check.s()
+    )
+    sender.add_periodic_task(
+        crontab(minute='*'), birthday_check.s()
+    )
+
+
 @app.task
 def send_message(text, tg_id):
     bot = TeleBot(os.getenv("TG_TOKEN"), parse_mode='html')
@@ -58,11 +68,3 @@ def get_tg_id(user: dict):
         return tg_id
 
 
-@app.on_after_configure.connect
-def setup_periodic_tasks(sender, **kwargs):
-    sender.add_periodic_task(
-        crontab(minute='*'), last_attempt_check.s()
-    )
-    sender.add_periodic_task(
-        crontab(minute='*'), birthday_check.s()
-    )
