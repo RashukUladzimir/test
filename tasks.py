@@ -61,7 +61,10 @@ def birthday_check():
             for user in users:
                 tg_id = get_tg_id(user)
                 if tg_id:
-                    send_message.delay(text, tg_id)
+                    bot = TeleBot(os.getenv("TG_TOKEN"), parse_mode='html')
+                    bot.send_message(tg_id, text=text)
+                else:
+                    print('no match with db')
 
 def get_tg_id(user: dict):
     appl = create_app()
