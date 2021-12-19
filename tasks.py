@@ -36,9 +36,11 @@ def send_message(text, tg_id):
 def last_attempt_check():
     text = """Добрый день, давненько Вы не были в нашей студии"""
     appl = create_app()
+    print('lac')
     with appl.app_context():
         users = User.query.all()
         now = datetime.now().date()
+        print('lac1')
         for user in users:
             if user.tg_id and user.name:
                 last_record = Record.query.filter_by(user_id=user.id).order_by(Record.date.desc()).first()
@@ -50,9 +52,11 @@ def last_attempt_check():
 @app.task
 def birthday_check():
     text = """Студия Oval поздравляет Вас с Днем Рождения и желает всего наилучшего"""
+    print('bc')
     company_ids = json.loads(os.environ.get('ADDRESSES'))
     for company in company_ids:
         users = y.get_birthday_clients(company)
+        print('bc1')
         if users:
             for user in users:
                 tg_id = get_tg_id(user)
